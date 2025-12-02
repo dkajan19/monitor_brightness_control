@@ -12,7 +12,6 @@ Uses DDC/CI protocol to talk directly to your monitor hardware. Gets monitor nam
 - [How to use](#how-to-use)
 - [Settings](#settings)
 - [Troubleshooting](#troubleshooting)
-- [Tech stuff](#tech-stuff)
 - [Credits](#credits)
 - [Notes](#notes)
 
