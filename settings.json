@@ -1,0 +1,16 @@
+{
+    "hotkeys": {
+        "increase_brightness": {
+            "key": "up",
+            "modifier": "ctrl"
+        },
+        "decrease_brightness": {
+            "key": "down",
+            "modifier": "ctrl"
+        }
+    },
+    "monitor_states": [
+        true,
+        true
+    ]
+}
