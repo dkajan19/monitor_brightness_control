@@ -123,3 +123,5 @@ This directly controls monitor hardware, so use common sense. I've been using it
 The `monitor_states` array in the JSON gets filled automatically based on how many monitors you have. Don't mess with it unless you know what you're doing.
 
 Feel free to report bugs or give feedback if something doesn't work right!
+
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=dkajan19.monitor_brightness_control)
