@@ -135,6 +135,7 @@ $Results | ConvertTo-Json -Compress
 monitor_wmi_data = get_monitor_id_data_wmi()
 for idx, item in enumerate(monitor_wmi_data, start=1):
     item["WMI_index"] = idx
+    
 
 def filter_supported_monitors():
     print("--------------------------------------------------")
@@ -142,43 +143,69 @@ def filter_supported_monitors():
     supported_data = []
     
     unpaired_wmi_data = list(monitor_wmi_data)
-    
+
     for i, monitor in enumerate(get_monitors()):
-        final_name = f"Monitor {i+1} (DDC)"
-        
+        monitor_index = i + 1
+        final_name = f"Monitor {monitor_index}"  # základný názov s poradovým číslom
+        model_name = None
+        serial_str = ""
+        capabilities = {}
+
         try:
             with monitor:
-                serial_str = ""
-                
+
+                # --------- SERIAL NUMBER ----------
                 try:
                     serial_str = monitor.get_serial().strip()
+                    print(f"  → DDC Serial: '{serial_str}'")
                 except Exception:
-                    pass
+                    print("  → DDC Serial: <not available>")
 
+                # --------- CAPABILITIES ----------
+                try:
+                    capabilities = monitor.get_vcp_capabilities()
+
+                    # Model z capabilities
+                    if isinstance(capabilities, dict):
+                        model_name = capabilities.get("model", None)
+                        if model_name:
+                            print(f"  → Model from capabilities: {model_name}")
+                except Exception as e:
+                    print(f"  → Capabilities not available: {e}")
+
+                # --------- MATCH WMI ----------
                 name_found = False
                 if serial_str:
                     for wmi_idx, wmi_item in enumerate(unpaired_wmi_data):
-                        if wmi_item.get('Serial', '').upper() == serial_str.upper():
-                            final_name = f"{wmi_item['Name']} ({wmi_item['WMI_index']})"
-                            unpaired_wmi_data.pop(wmi_idx) # Remove so it won't be paired again
+                        wmi_serial = wmi_item.get('Serial', '')
+                        print(f"  → WMI Serial: '{wmi_serial}' (match: {wmi_serial.upper() == serial_str.upper()})")
+
+                        if wmi_serial.upper() == serial_str.upper():
+                            final_name = f"{wmi_item['Name']} ({monitor_index})"
+                            unpaired_wmi_data.pop(wmi_idx)
                             name_found = True
                             break
-                
-                if not name_found and unpaired_wmi_data:
-                    first_unpaired = unpaired_wmi_data.pop(0)
-                    final_name = f"({first_unpaired['WMI_index']}) {first_unpaired['Name']}"
-                    
-                print(f"DDC Monitor {i+1} paired with: {final_name}")
-                
+
+                # --------- NO WMI MATCH → use model name ----------
+                if not name_found:
+                    if model_name:
+                        final_name = f"{model_name} ({monitor_index})"
+                    print(f"DDC Monitor {monitor_index} paired with: {final_name}")
+
                 supported_data.append({
                     'monitor_obj': monitor,
                     'cached_brightness': monitor.get_luminance(),
-                    'friendly_name': final_name # Save name directly to data
+                    'friendly_name': final_name,
+                    'serial': serial_str,
+                    'model': model_name,
+                    'capabilities': capabilities
                 })
-        except Exception:
-            pass
-            
+
+        except Exception as e:
+            print(f"Monitor {monitor_index} failed: {e}")
+
     return supported_data
+
 
 valid_monitors_data = filter_supported_monitors()
 #monitor_states = [True] * len(valid_monitors_data)

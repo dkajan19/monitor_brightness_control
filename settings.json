@@ -10,7 +10,6 @@
         }
     },
     "monitor_states": [
-        true,
         true
     ]
 }
