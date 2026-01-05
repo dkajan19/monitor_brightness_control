@@ -6,6 +6,8 @@ Python app for Windows that controls monitor brightness with keyboard shortcuts.
 
 Uses DDC/CI protocol to talk directly to your monitor hardware. Gets monitor names from Windows WMI. The brightness slider shows up near the bottom center of your screen for a few seconds when you adjust brightness.
 
+<a href='https://ko-fi.com/J3J11RQE5L' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 ## Table of Contents
 - [Features](#features)
 - [Requirements](#requirements)
